@@ -11,19 +11,19 @@ using Serilog;
 
 namespace SystemInfoApi.Services
 {
-    public class SaveStatsPerMinute : IHostedService, IDisposable
+    public class SaveStatsPerDay : IHostedService, IDisposable
     {
         private Timer _timer;
 
-        public SaveStatsPerMinute()
+        public SaveStatsPerDay()
         {
 
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,TimeSpan.FromSeconds(60));
-            Log.Information($"Save Stats per Minute Hosted Service Started at {DateTime.Now}.");
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,TimeSpan.FromHours(24));
+            Log.Information($"Save Stats per Day Hosted Service Started at {DateTime.Now}.");
             return Task.CompletedTask;
         }
 
@@ -42,7 +42,7 @@ namespace SystemInfoApi.Services
         public Task StopAsync(CancellationToken stoppingToken)
         {
             _timer?.Change(Timeout.Infinite, 0);
-            Log.Information($"Save Stats per Minute Hosted Service Stopped at {DateTime.Now}");
+            Log.Information($"Save Stats per Day Hosted Service Stopped at {DateTime.Now}");
             return Task.CompletedTask;
         }
 

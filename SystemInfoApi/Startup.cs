@@ -78,7 +78,9 @@ namespace SystemInfoApi
             
             services.AddTokenAuthentication(Configuration);
             
+            services.AddHostedService<SaveStatsPerMinute>();
             services.AddHostedService<SaveStatsPerHour>();
+            services.AddHostedService<SaveStatsPerDay>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -26,10 +26,10 @@ namespace SystemInfoApi.Controllers
     [Consumes("application/json")]
     public class TokenController : Controller
     {
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration config;
         public TokenController(IConfiguration configuration_)
         {
-            configuration = configuration_;
+            config = configuration_;
         }
         
         /// <summary>
@@ -46,31 +46,24 @@ namespace SystemInfoApi.Controllers
                 var remoteIp = HttpContext.Connection.RemoteIpAddress;
                 var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
                 Log.Information($"Remote Ip Address: {remoteIp}, UserAgent: {userAgent}");
-
-                /*string reqSQL = $"select * from devices where mac_address = '{deviceInfo.mac_address.ToUpper()}' and dynamic_key='{deviceInfo.dynamic_key}' and device_uuid = '{deviceInfo.device_uuid}' and serial_number = '{deviceInfo.serial_number}'";
-
-                using (var connection = new SqlConnection(sql_Conn))
-                {
-                    deviceInfo = ((List<DeviceInfo>)await connection.QueryAsync<DeviceInfo>(reqSQL)).SingleOrDefault();
-                    if (deviceInfo != null)
-                    {
-                        var jwt = new JwtService(configuration);
-                        var token = jwt.GenerateSecurityToken(
-                            user,
-                            password);
-                        return await Task.Run(() => token);
-                    }
-                    else
-                    {
-                        return await Task.Run(() => string.Empty);
-                    }
-                }*/
                 
-                var jwt = new JwtService(configuration);
-                var token = jwt.GenerateSecurityToken(
-                    Login.User,
-                    Login.Password);
-                return await Task.Run(() => Ok(token));
+                var settingUserName = config.GetSection("Login").GetSection("userName").Value;
+                var settingPassword = config.GetSection("Login").GetSection("password").Value;
+                
+                if (Login.User == settingUserName && Login.Password == settingPassword)
+                {
+                    var jwt = new JwtService(config);
+                    var token = jwt.GenerateSecurityToken(
+                        Login.User,
+                        Login.Password);
+                    return await Task.Run(() => Ok(token));
+                }
+                else
+                {
+                    return await Task.Run(() => Unauthorized($"Username or Password mismatch."));
+                }
+                
+
             }
             catch (Exception ex)
             {
