@@ -24,6 +24,39 @@ namespace SystemInfoApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Program.CurrentDatabase = configuration.GetSection("DatabaseInfo").GetSection("CurrentDatabase").Value;
+            switch (Program.CurrentDatabase)
+            {
+                case "SQLite":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
+                    RepoDb.SqLiteBootstrap.Initialize();
+                    break;
+                case "Postgres":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("postgresConnection").Value;
+                    RepoDb.PostgreSqlBootstrap.Initialize();
+                    break;
+                case "MySQL":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("mysqlConnection").Value;
+                    RepoDb.MySqlBootstrap.Initialize();
+                    break;
+                case "SQLServer":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqlConnection").Value;
+                    RepoDb.SqlServerBootstrap.Initialize();
+                    break;
+                case "LiteDB":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("liteDB").Value;
+                    break;
+                case "MongoDB":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("mongoConnection").Value;
+                    break;
+                case "RavenDB":
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("ravenDBConnection").Value;
+                    break;
+                default:
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
+                    break;
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -78,9 +111,11 @@ namespace SystemInfoApi
             
             services.AddTokenAuthentication(Configuration);
             
-            services.AddHostedService<SaveStatsPerMinute>();
+            services.AddHostedService<SaveStatsPerSecond>();
+            //services.AddHostedService<SaveStatsPerMinute>();
             services.AddHostedService<SaveStatsPerHour>();
             services.AddHostedService<SaveStatsPerDay>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

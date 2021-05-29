@@ -3,16 +3,25 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using SystemInfoApi.Models;
 using Serilog;
 using Serilog.Events;
 
 namespace SystemInfoApi
 {
-    public class Program
+    public static class Program
     {
+        public static ConcurrentBag<MemoryMetrics> cbMemoryMetricsCollection = new ConcurrentBag<MemoryMetrics>(); 
+        public static ConcurrentBag<CpuMetrics> cbCPUMetricsCollection = new ConcurrentBag<CpuMetrics>(); 
+        public static ConcurrentBag<DriveMetrics> cbDrivesMetricsCollection = new ConcurrentBag<DriveMetrics>();
+        public static string CurrentDatabase { get; set; } = "LiteDB";
+        public static string CurrentConnectionString { get; set; }
+
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()

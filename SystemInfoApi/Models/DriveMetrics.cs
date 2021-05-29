@@ -13,5 +13,6 @@ namespace SystemInfoApi.Models
         public long? TotalFreeSpace { get; set; }
         public long? TotalSize { get; set; }
         public string? VolumeLabel { get; set; }
+        public DateTime CurrentTimeStamp { get; set; }
     }
 }

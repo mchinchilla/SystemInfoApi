@@ -15,6 +15,7 @@ namespace SystemInfoApi.Models
         public double softirq { get; set; }
         public double steal { get; set; }
         public double guest { get; set; }
-        public double guest_nice { get; set; }        
+        public double guest_nice { get; set; }
+        public DateTime CurrentTimeStamp { get; set; }
     }
 }

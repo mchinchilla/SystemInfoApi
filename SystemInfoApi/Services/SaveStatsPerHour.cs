@@ -31,7 +31,8 @@ namespace SystemInfoApi.Services
         {
             try
             {
-                // Save Stats into DB
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
             catch (Exception ex)
             {
