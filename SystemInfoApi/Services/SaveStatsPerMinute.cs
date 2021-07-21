@@ -108,7 +108,25 @@ namespace SystemInfoApi.Services
                         {
                             // CPU
                             var colCPU = db.GetCollection<CpuMetrics>("CpuMetrics");
-                            colCPU.InsertBulk(Program.cbCPUMetricsCollection);
+                            //colCPU.InsertBulk(Program.cbCPUMetricsCollection);
+                            var cpuAggregates = Program.cbCPUMetricsCollection
+                                .GroupBy(l => new {l.cpu, l.CurrentTimeStamp.Minute})
+                                .Select(cl => new CpuMetrics
+                                {
+                                    cpu = cl.Select(x=>x.cpu).FirstOrDefault(),
+                                    user = cl.Select(x=>x.user).Average(),
+                                    nice = cl.Select(x=>x.nice).Average(),
+                                    system = cl.Select(x=>x.system).Average(),
+                                    idle = cl.Select(x=>x.idle).Average(),
+                                    iowait = cl.Select(x=>x.iowait).Average(),
+                                    softirq = cl.Select(x=>x.softirq).Average(),
+                                    steal = cl.Select(x=>x.steal).Average(),
+                                    guest = cl.Select(x=>x.guest).Average(),
+                                    guest_nice = cl.Select(x=>x.guest_nice).Average(),
+                                    CurrentTimeStamp = cl.Select(x=>x.CurrentTimeStamp).Max()
+                                }).ToList();
+                            Log.Information($"CPU Records By Minute: {cpuAggregates.Count}");
+                            colCPU.InsertBulk(cpuAggregates);
                             Program.cbCPUMetricsCollection.Clear();
                             
                             // Memory
