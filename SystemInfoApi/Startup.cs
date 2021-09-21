@@ -111,10 +111,10 @@ namespace SystemInfoApi
             
             services.AddTokenAuthentication(Configuration);
             
-            services.AddHostedService<SaveStatsPerSecond>();
-            services.AddHostedService<SaveStatsPerMinute>();
-            services.AddHostedService<SaveStatsPerHour>();
-            services.AddHostedService<SaveStatsPerDay>();
+            // services.AddHostedService<SaveStatsPerSecond>();
+            // services.AddHostedService<SaveStatsPerMinute>();
+            // services.AddHostedService<SaveStatsPerHour>();
+            // services.AddHostedService<SaveStatsPerDay>();
             
         }
 
