@@ -30,7 +30,7 @@ namespace SystemInfoApi
             {
                 case "SQLite":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
-                    RepoDb.SqLiteBootstrap.Initialize();
+                    RepoDb.SqliteBootstrap.Initialize();
                     break;
                 case "Postgres":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("postgresConnection").Value;
@@ -72,6 +72,7 @@ namespace SystemInfoApi
                 //o.JsonSerializerOptions.IgnoreNullValues = true;
                 //o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
             });
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SystemInfoApi", Version = "v1" });
