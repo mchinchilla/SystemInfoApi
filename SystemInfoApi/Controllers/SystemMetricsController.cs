@@ -33,7 +33,7 @@ namespace SystemInfoApi.Controllers
         {
             try
             {
-                List<CpuMetrics> lstCpus = new List<CpuMetrics>();
+                List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 lstCpus = await MetricsHelper.GetCPUMetricsAsync();
                 return await Task.Run(()=> Ok(lstCpus));
             }
@@ -54,7 +54,7 @@ namespace SystemInfoApi.Controllers
         {
             try
             {
-                MemoryMetrics metrics = new MemoryMetrics();
+                memory_metrics metrics = new memory_metrics();
                 metrics = await MetricsHelper.GetMemoryMetricsAsync();
                 return await Task.Run(()=> Ok(metrics));
             }
@@ -74,9 +74,9 @@ namespace SystemInfoApi.Controllers
         {
             try
             {
-                List<DriveMetrics> lstDrives = new List<DriveMetrics>();
+                List<drive_metrics> lstDrives = new List<drive_metrics>();
                 lstDrives = await MetricsHelper.GetDrivesMetricsAsync();
-                return await Task.Run(()=> Ok(lstDrives.FindAll(c=>c.IsReady==true)));
+                return await Task.Run(()=> Ok(lstDrives.FindAll(c=>c.is_ready==true)));
             }
             catch (Exception e)
             {

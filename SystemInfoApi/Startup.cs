@@ -23,6 +23,10 @@ namespace SystemInfoApi
     {
         public Startup(IConfiguration configuration)
         {
+            Program.cbCPUMetricsCollection.Clear();
+            Program.cbMemoryMetricsCollection.Clear();
+            Program.cbDrivesMetricsCollection.Clear();
+            
             Configuration = configuration;
 
             Program.CurrentDatabase = configuration.GetSection("DatabaseInfo").GetSection("CurrentDatabase").Value;
@@ -33,28 +37,35 @@ namespace SystemInfoApi
                     RepoDb.SqliteBootstrap.Initialize();
                     break;
                 case "Postgres":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("postgresConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
+                        .GetSection("postgresConnection").Value;
                     RepoDb.PostgreSqlBootstrap.Initialize();
                     break;
                 case "MySQL":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("mysqlConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
+                        .GetSection("mysqlConnection").Value;
                     RepoDb.MySqlBootstrap.Initialize();
                     break;
                 case "SQLServer":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqlConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
+                        .GetSection("sqlConnection").Value;
                     RepoDb.SqlServerBootstrap.Initialize();
                     break;
                 case "LiteDB":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("liteDB").Value;
+                    Program.CurrentConnectionString =
+                        configuration.GetSection("connectionstrings").GetSection("liteDB").Value;
                     break;
                 case "MongoDB":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("mongoConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
+                        .GetSection("mongoConnection").Value;
                     break;
                 case "RavenDB":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("ravenDBConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
+                        .GetSection("ravenDBConnection").Value;
                     break;
                 default:
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
+                    Program.CurrentConnectionString =
+                        configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
                     break;
             }
         }
@@ -64,7 +75,6 @@ namespace SystemInfoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers().AddJsonOptions(o =>
             {
                 //o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
@@ -72,7 +82,7 @@ namespace SystemInfoApi
                 //o.JsonSerializerOptions.IgnoreNullValues = true;
                 //o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
             });
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SystemInfoApi", Version = "v1" });
@@ -93,30 +103,28 @@ namespace SystemInfoApi
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {securityScheme, new string[] { }}
+                    { securityScheme, new string[] { } }
                 });
 
                 // add Basic Authentication
-                var basicSecurityScheme = new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "basic",
-                    Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
-                };
-                c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {basicSecurityScheme, new string[] { }}
-                });                
+                // var basicSecurityScheme = new OpenApiSecurityScheme
+                // {
+                //     Type = SecuritySchemeType.Http,
+                //     Scheme = "basic",
+                //     Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
+                // };
+                // c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
+                // c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                // {
+                //     { basicSecurityScheme, new string[] { } }
+                // });
             });
-            
+
             services.AddTokenAuthentication(Configuration);
-            
-            // services.AddHostedService<SaveStatsPerSecond>();
-            // services.AddHostedService<SaveStatsPerMinute>();
+            services.AddHostedService<SaveStatsPerSecond>();
+            services.AddHostedService<SaveStatsPerMinute>();
             // services.AddHostedService<SaveStatsPerHour>();
             // services.AddHostedService<SaveStatsPerDay>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -130,7 +138,7 @@ namespace SystemInfoApi
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
@@ -138,10 +146,7 @@ namespace SystemInfoApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

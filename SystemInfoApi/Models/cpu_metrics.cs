@@ -3,8 +3,9 @@ using System;
 namespace SystemInfoApi.Models
 {
     [Serializable]
-    public class CpuMetrics
+    public class cpu_metrics
     {
+        public long id { get; set; }
         public string cpu { get; set; }
         public double user { get; set; }
         public double nice { get; set; }
@@ -16,6 +17,6 @@ namespace SystemInfoApi.Models
         public double steal { get; set; }
         public double guest { get; set; }
         public double guest_nice { get; set; }
-        public DateTime CurrentTimeStamp { get; set; }
+        public DateTime current_stamp { get; set; }
     }
 }

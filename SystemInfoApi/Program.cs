@@ -18,9 +18,9 @@ namespace SystemInfoApi
 {
     public static class Program
     {
-        public static ConcurrentBag<MemoryMetrics> cbMemoryMetricsCollection = new ConcurrentBag<MemoryMetrics>(); 
-        public static ConcurrentBag<CpuMetrics> cbCPUMetricsCollection = new ConcurrentBag<CpuMetrics>(); 
-        public static ConcurrentBag<DriveMetrics> cbDrivesMetricsCollection = new ConcurrentBag<DriveMetrics>();
+        public static ConcurrentBag<memory_metrics> cbMemoryMetricsCollection = new ConcurrentBag<memory_metrics>(); 
+        public static ConcurrentBag<cpu_metrics> cbCPUMetricsCollection = new ConcurrentBag<cpu_metrics>(); 
+        public static ConcurrentBag<drive_metrics> cbDrivesMetricsCollection = new ConcurrentBag<drive_metrics>();
         public static string CurrentDatabase { get; set; } = "LiteDB";
         public static string CurrentConnectionString { get; set; }
 
@@ -56,7 +56,7 @@ namespace SystemInfoApi
                     Console.WriteLine(String.Empty.PadLeft(adapter.Description.Length,'='));
                     Console.WriteLine("  Adapter ID ................................ : {0}", adapter.Id);
                     Console.WriteLine("  Adapter Desc............................... : {0}", adapter.Description);
-                    Console.WriteLine("  Adapter Name............................... : {0}", adapter.Name);
+                    Console.WriteLine("  Adapter name............................... : {0}", adapter.Name);
                     Console.WriteLine("  Interface type ............................ : {0}", adapter.NetworkInterfaceType);
                     Console.WriteLine("  Physical Address .......................... : {0}", adapter.GetPhysicalAddress().ToString());
                     Console.WriteLine("  Operational status ........................ : {0}", adapter.OperationalStatus);

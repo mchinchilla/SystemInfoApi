@@ -11,7 +11,7 @@ namespace SystemInfoApi.Helpers
 {
     public static class MetricsHelper
     {
-        public static async Task<MemoryMetrics> GetMemoryMetricsAsync()
+        public static async Task<memory_metrics> GetMemoryMetricsAsync()
         {
             var output = "";
 
@@ -34,48 +34,49 @@ namespace SystemInfoApi.Helpers
                 var lines = output.Split("\n");
                 var memory = lines[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                var metrics = new MemoryMetrics();
-                metrics.memTotal = double.Parse(memory[1]);
-                metrics.memUsed = double.Parse(memory[2]);
-                metrics.memFree = double.Parse(memory[3]);
-                metrics.memShared = double.Parse(memory[4]);
-                metrics.memBuffer = double.Parse(memory[5]);
-                metrics.memAvailable = double.Parse(memory[6]);
+                var metrics = new memory_metrics();
+                metrics.mem_total = double.Parse(memory[1]);
+                metrics.mem_used = double.Parse(memory[2]);
+                metrics.mem_free = double.Parse(memory[3]);
+                metrics.mem_shared = double.Parse(memory[4]);
+                metrics.mem_buffer = double.Parse(memory[5]);
+                metrics.mem_available = double.Parse(memory[6]);
 
                 var swap = lines[2].Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                metrics.swapTotal = double.Parse(swap[1]);
-                metrics.swapUsed = double.Parse(swap[2]);
-                metrics.swapFree = double.Parse(swap[3]);
-                metrics.CurrentTimeStamp = DateTime.Now;
+                metrics.swap_total = double.Parse(swap[1]);
+                metrics.swap_used = double.Parse(swap[2]);
+                metrics.swap_free = double.Parse(swap[3]);
+                metrics.current_stamp = DateTime.Now;
 
                 return await Task.Run(() => metrics);
             }
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(() => new MemoryMetrics());
+                return await Task.Run(() => new memory_metrics());
             }
         }
 
-        public static async Task<List<DriveMetrics>> GetDrivesMetricsAsync()
+        public static async Task<List<drive_metrics>> GetDrivesMetricsAsync()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
-            List<DriveMetrics> lstDrives = new List<DriveMetrics>();
+            List<drive_metrics> lstDrives = new List<drive_metrics>();
 
             try
             {
                 foreach (var drive in allDrives)
                 {
-                    DriveMetrics drvM = new DriveMetrics
+                    drive_metrics drvM = new drive_metrics
                     {
-                        DriveType = drive.DriveType.ToString(),
-                        DriveFormat = drive.DriveFormat,
-                        TotalSize = drive.TotalSize,
-                        TotalFreeSpace = drive.TotalFreeSpace,
-                        AvailableFreeSpace = drive.AvailableFreeSpace,
-                        VolumeLabel = drive.VolumeLabel,
-                        IsReady = drive.IsReady,
-                        CurrentTimeStamp = DateTime.Now
+                        name = drive.Name,
+                        drive_type = drive.DriveType.ToString(),
+                        drive_format = drive.DriveFormat,
+                        total_size = drive.TotalSize,
+                        total_free_space = drive.TotalFreeSpace,
+                        available_free_space = drive.AvailableFreeSpace,
+                        volume_label = drive.VolumeLabel,
+                        is_ready = drive.IsReady,
+                        current_stamp = DateTime.Now
                     };
                     lstDrives.Add(drvM);
                 }
@@ -84,17 +85,17 @@ namespace SystemInfoApi.Helpers
                 /*
                  * TEST OUTPUT
                  */
-                //List<DriveInfo> lstDrives = allDrives.ToList().FindAll(d => d.IsReady == true && d.DriveType== DriveType.Fixed && !string.IsNullOrEmpty(d.DriveFormat) && d.DriveFormat!="squashfs");
-                foreach (var d in lstDrives.FindAll(c => c.IsReady == true))
+                //List<DriveInfo> lstDrives = allDrives.ToList().FindAll(d => d.is_ready == true && d.drive_type== drive_type.Fixed && !string.IsNullOrEmpty(d.drive_format) && d.drive_format!="squashfs");
+                foreach (var d in lstDrives.FindAll(c => c.is_ready == true))
                 {
                     Log.Information($"{string.Empty.PadRight(80, '=')}");
-                    Log.Information($"  Volume label: {d.VolumeLabel}");
-                    Log.Information($"  File system: {d.DriveFormat}");
-                    Log.Information($"  File Type: {d.DriveType}");
-                    Log.Information($"  Available space to current user:{d.AvailableFreeSpace} bytes");
+                    Log.Information($"  Volume label: {d.volume_label}");
+                    Log.Information($"  File system: {d.drive_format}");
+                    Log.Information($"  File Type: {d.drive_type}");
+                    Log.Information($"  Available space to current user:{d.available_free_space} bytes");
 
-                    Log.Information($"  Total available space:          {d.TotalFreeSpace} bytes");
-                    Log.Information($"  Total size of drive:            {d.TotalSize} bytes ");
+                    Log.Information($"  Total available space:          {d.total_free_space} bytes");
+                    Log.Information($"  Total size of drive:            {d.total_size} bytes ");
                 }
                 #endif
 
@@ -104,12 +105,12 @@ namespace SystemInfoApi.Helpers
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(() => new List<DriveMetrics>());
+                return await Task.Run(() => new List<drive_metrics>());
             }
         }
 
 
-        public static async Task<List<CpuMetrics>> GetCPUMetricsAsync()
+        public static async Task<List<cpu_metrics>> GetCPUMetricsAsync()
         {
             try
             {
@@ -126,7 +127,7 @@ namespace SystemInfoApi.Helpers
                 }
 
                 var lines = output.Split("\n");
-                List<CpuMetrics> lstCpus = new List<CpuMetrics>();
+                List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 foreach (var line in lines)
                 {
                     var current_cpu = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -143,7 +144,7 @@ namespace SystemInfoApi.Helpers
                     }
                     #endif
                     
-                    CpuMetrics cpuMetric = new CpuMetrics
+                    cpu_metrics cpuMetric = new cpu_metrics
                     {
                         cpu = current_cpu[0].ToString(),
                         user = double.Parse(current_cpu[1]),
@@ -156,7 +157,7 @@ namespace SystemInfoApi.Helpers
                         steal = double.Parse(current_cpu[8]),
                         guest = double.Parse(current_cpu[9]),
                         guest_nice = double.Parse(current_cpu[10]),
-                        CurrentTimeStamp = DateTime.Now
+                        current_stamp = DateTime.Now
                     };
                     lstCpus.Add(cpuMetric);
                 }
@@ -166,7 +167,7 @@ namespace SystemInfoApi.Helpers
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(()=> new List<CpuMetrics>());
+                return await Task.Run(()=> new List<cpu_metrics>());
             }
         }
     }

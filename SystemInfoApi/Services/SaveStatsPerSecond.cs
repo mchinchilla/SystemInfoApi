@@ -37,13 +37,13 @@ namespace SystemInfoApi.Services
             try
             {
                 // Memory and Swap
-                MemoryMetrics metrics = new MemoryMetrics();
+                memory_metrics metrics = new memory_metrics();
                 metrics = await MetricsHelper.GetMemoryMetricsAsync();
                 
                 Program.cbMemoryMetricsCollection.Add(metrics);
                 
                 // Drives
-                List<DriveMetrics> lstDrives = new List<DriveMetrics>();
+                List<drive_metrics> lstDrives = new List<drive_metrics>();
                 lstDrives = await MetricsHelper.GetDrivesMetricsAsync();
                 
                 foreach (var drive in lstDrives)
@@ -52,7 +52,7 @@ namespace SystemInfoApi.Services
                 }
                 
                 // CPU 
-                List<CpuMetrics> lstCpus = new List<CpuMetrics>();
+                List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 lstCpus = await MetricsHelper.GetCPUMetricsAsync();
                 
                 foreach (var cpu in lstCpus)
@@ -62,7 +62,7 @@ namespace SystemInfoApi.Services
                 
                 
                 #if DEBUG
-                Log.Information($"CPU Records: {Program.cbCPUMetricsCollection.Count}, Memory records: {Program.cbMemoryMetricsCollection.Count}, Drives Records: {Program.cbDrivesMetricsCollection.Count}");
+                //Log.Information($"CPU Records: {Program.cbCPUMetricsCollection.Count}, Memory records: {Program.cbMemoryMetricsCollection.Count}, Drives Records: {Program.cbDrivesMetricsCollection.Count}");
                 #endif
             }
             catch (Exception ex)
