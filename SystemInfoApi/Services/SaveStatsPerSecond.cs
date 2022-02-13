@@ -22,12 +22,11 @@ namespace SystemInfoApi.Services
 
         public SaveStatsPerSecond()
         {
-
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,TimeSpan.FromSeconds(1));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
             Log.Information($"Save Stats per Second Hosted Service Started at {DateTime.Now}.");
             return Task.CompletedTask;
         }
@@ -39,31 +38,31 @@ namespace SystemInfoApi.Services
                 // Memory and Swap
                 memory_metrics metrics = new memory_metrics();
                 metrics = await MetricsHelper.GetMemoryMetricsAsync();
-                
+
                 Program.cbMemoryMetricsCollection.Add(metrics);
-                
+
                 // Drives
                 List<drive_metrics> lstDrives = new List<drive_metrics>();
                 lstDrives = await MetricsHelper.GetDrivesMetricsAsync();
-                
+
                 foreach (var drive in lstDrives)
                 {
                     Program.cbDrivesMetricsCollection.Add(drive);
                 }
-                
+
                 // CPU 
                 List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 lstCpus = await MetricsHelper.GetCPUMetricsAsync();
-                
+
                 foreach (var cpu in lstCpus)
                 {
                     Program.cbCPUMetricsCollection.Add(cpu);
                 }
-                
-                
-                #if DEBUG
+
+
+#if DEBUG
                 //Log.Information($"CPU Records: {Program.cbCPUMetricsCollection.Count}, Memory records: {Program.cbMemoryMetricsCollection.Count}, Drives Records: {Program.cbDrivesMetricsCollection.Count}");
-                #endif
+#endif
             }
             catch (Exception ex)
             {

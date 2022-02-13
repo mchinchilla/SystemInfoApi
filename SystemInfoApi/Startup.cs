@@ -26,7 +26,7 @@ namespace SystemInfoApi
             Program.cbCPUMetricsCollection.Clear();
             Program.cbMemoryMetricsCollection.Clear();
             Program.cbDrivesMetricsCollection.Clear();
-            
+
             Configuration = configuration;
 
             Program.CurrentDatabase = configuration.GetSection("DatabaseInfo").GetSection("CurrentDatabase").Value;

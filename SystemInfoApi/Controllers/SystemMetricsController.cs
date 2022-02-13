@@ -35,12 +35,12 @@ namespace SystemInfoApi.Controllers
             {
                 List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 lstCpus = await MetricsHelper.GetCPUMetricsAsync();
-                return await Task.Run(()=> Ok(lstCpus));
+                return await Task.Run(() => Ok(lstCpus));
             }
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(()=> NotFound());
+                return await Task.Run(() => NotFound());
             }
         }
 
@@ -56,12 +56,12 @@ namespace SystemInfoApi.Controllers
             {
                 memory_metrics metrics = new memory_metrics();
                 metrics = await MetricsHelper.GetMemoryMetricsAsync();
-                return await Task.Run(()=> Ok(metrics));
+                return await Task.Run(() => Ok(metrics));
             }
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(()=> NotFound());
+                return await Task.Run(() => NotFound());
             }
         }
 
@@ -76,12 +76,13 @@ namespace SystemInfoApi.Controllers
             {
                 List<drive_metrics> lstDrives = new List<drive_metrics>();
                 lstDrives = await MetricsHelper.GetDrivesMetricsAsync();
-                return await Task.Run(()=> Ok(lstDrives.FindAll(c=>c.is_ready==true)));
+                //return await Task.Run(()=> Ok(lstDrives.FindAll(c=>c.is_ready==true)));
+                return await Task.Run(() => Ok(lstDrives.FindAll(c => c.is_ready == true && c.drive_format != "squashfs")));
             }
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(()=> NotFound());
+                return await Task.Run(() => NotFound());
             }
         }
     }

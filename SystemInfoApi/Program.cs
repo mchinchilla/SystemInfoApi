@@ -18,8 +18,8 @@ namespace SystemInfoApi
 {
     public static class Program
     {
-        public static ConcurrentBag<memory_metrics> cbMemoryMetricsCollection = new ConcurrentBag<memory_metrics>(); 
-        public static ConcurrentBag<cpu_metrics> cbCPUMetricsCollection = new ConcurrentBag<cpu_metrics>(); 
+        public static ConcurrentBag<memory_metrics> cbMemoryMetricsCollection = new ConcurrentBag<memory_metrics>();
+        public static ConcurrentBag<cpu_metrics> cbCPUMetricsCollection = new ConcurrentBag<cpu_metrics>();
         public static ConcurrentBag<drive_metrics> cbDrivesMetricsCollection = new ConcurrentBag<drive_metrics>();
         public static string CurrentDatabase { get; set; } = "LiteDB";
         public static string CurrentConnectionString { get; set; }
@@ -33,14 +33,13 @@ namespace SystemInfoApi
                 .WriteTo.Console()
                 .WriteTo.File("logs/log-.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
-            
+
             // TEST CODE NETWORK INTERFACES INFO AND STATS
             try
             {
                 IPGlobalProperties computerProperties = IPGlobalProperties.GetIPGlobalProperties();
                 NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-                Console.WriteLine("Interface information for {0}.{1}     ",
-                    computerProperties.HostName, computerProperties.DomainName);
+                Console.WriteLine("Interface information for {0}.{1}     ", computerProperties.HostName, computerProperties.DomainName);
                 if (nics == null || nics.Length < 1)
                 {
                     Console.WriteLine("  No network interfaces found.");
@@ -53,34 +52,38 @@ namespace SystemInfoApi
                     IPInterfaceProperties properties = adapter.GetIPProperties();
                     Console.WriteLine();
                     Console.WriteLine(adapter.Description);
-                    Console.WriteLine(String.Empty.PadLeft(adapter.Description.Length,'='));
+                    Console.WriteLine(String.Empty.PadLeft(adapter.Description.Length, '='));
                     Console.WriteLine("  Adapter ID ................................ : {0}", adapter.Id);
                     Console.WriteLine("  Adapter Desc............................... : {0}", adapter.Description);
                     Console.WriteLine("  Adapter name............................... : {0}", adapter.Name);
                     Console.WriteLine("  Interface type ............................ : {0}", adapter.NetworkInterfaceType);
                     Console.WriteLine("  Physical Address .......................... : {0}", adapter.GetPhysicalAddress().ToString());
                     Console.WriteLine("  Operational status ........................ : {0}", adapter.OperationalStatus);
-                    string versions ="";
+                    string versions = "";
 
                     // Create a display string for the supported IP versions.
                     if (adapter.Supports(NetworkInterfaceComponent.IPv4))
                     {
                         versions = "IPv4";
                     }
+
                     if (adapter.Supports(NetworkInterfaceComponent.IPv6))
                     {
                         if (versions.Length > 0)
                         {
                             versions += " ";
                         }
+
                         versions += "IPv6";
                     }
-                    Console.WriteLine("  IP version ................................ : {0}", versions);                
+
+                    Console.WriteLine("  IP version ................................ : {0}", versions);
                     // The following information is not useful for loopback adapters.
                     if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback)
                     {
                         continue;
                     }
+
                     Console.WriteLine("  DNS suffix ................................ : {0}", properties.DnsSuffix);
 
                     string label;
@@ -90,7 +93,6 @@ namespace SystemInfoApi
                         Console.WriteLine("  MTU........................................ : {0}", ipv4.Mtu);
                         if (ipv4.UsesWins)
                         {
-
                             IPAddressCollection winsServers = properties.WinsServersAddresses;
                             if (winsServers.Count > 0)
                             {
@@ -132,16 +134,11 @@ namespace SystemInfoApi
                 Log.CloseAndFlush();
             }
         }
-        
-                
-        
+
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

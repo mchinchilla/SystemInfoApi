@@ -27,10 +27,10 @@ namespace SystemInfoApi.Helpers
                     output = process.StandardOutput.ReadToEnd();
                 }
 
-                #if DEBUG
+#if DEBUG
                 Log.Information($"\n{output}");
-                #endif
-                
+#endif
+
                 var lines = output.Split("\n");
                 var memory = lines[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
@@ -81,12 +81,12 @@ namespace SystemInfoApi.Helpers
                     lstDrives.Add(drvM);
                 }
 
-                #if DEBUG
+#if DEBUG
                 /*
                  * TEST OUTPUT
                  */
                 //List<DriveInfo> lstDrives = allDrives.ToList().FindAll(d => d.is_ready == true && d.drive_type== drive_type.Fixed && !string.IsNullOrEmpty(d.drive_format) && d.drive_format!="squashfs");
-                foreach (var d in lstDrives.FindAll(c => c.is_ready == true))
+                foreach (var d in lstDrives.FindAll(d => d.is_ready == true && !string.IsNullOrEmpty(d.drive_format) && d.drive_format != "squashfs"))
                 {
                     Log.Information($"{string.Empty.PadRight(80, '=')}");
                     Log.Information($"  Volume label: {d.volume_label}");
@@ -97,7 +97,7 @@ namespace SystemInfoApi.Helpers
                     Log.Information($"  Total available space:          {d.total_free_space} bytes");
                     Log.Information($"  Total size of drive:            {d.total_size} bytes ");
                 }
-                #endif
+#endif
 
                 Log.Information($"{string.Empty.PadRight(80, '=')}");
                 return await Task.Run(() => lstDrives);
@@ -121,8 +121,8 @@ namespace SystemInfoApi.Helpers
                 info.Arguments = "-c \"cat /proc/stat | grep cpu\"";
                 info.RedirectStandardOutput = true;
 
-                using(var process = Process.Start(info))
-                { 
+                using (var process = Process.Start(info))
+                {
                     output = process.StandardOutput.ReadToEnd();
                 }
 
@@ -131,19 +131,19 @@ namespace SystemInfoApi.Helpers
                 foreach (var line in lines)
                 {
                     var current_cpu = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    if (current_cpu.Length==0)
+                    if (current_cpu.Length == 0)
                     {
                         break;
                     }
-                
-                    #if DEBUG
+
+#if DEBUG
                     if (!Regex.Match(current_cpu[0].ToString(), @"cpu\d+$").Success)
                     {
                         Log.Information($"CPU Totals: {current_cpu[0].ToString()}");
                         Log.Information($"\n{output}");
                     }
-                    #endif
-                    
+#endif
+
                     cpu_metrics cpuMetric = new cpu_metrics
                     {
                         cpu = current_cpu[0].ToString(),
@@ -161,13 +161,13 @@ namespace SystemInfoApi.Helpers
                     };
                     lstCpus.Add(cpuMetric);
                 }
-                
-                return await Task.Run(()=> lstCpus);
+
+                return await Task.Run(() => lstCpus);
             }
             catch (Exception e)
             {
                 Log.Error($"{e.Message}\n{e}");
-                return await Task.Run(()=> new List<cpu_metrics>());
+                return await Task.Run(() => new List<cpu_metrics>());
             }
         }
     }
