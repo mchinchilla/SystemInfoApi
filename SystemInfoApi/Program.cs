@@ -42,10 +42,10 @@ namespace SystemInfoApi
                 Console.WriteLine("Interface information for {0}.{1}     ", computerProperties.HostName, computerProperties.DomainName);
                 if (nics == null || nics.Length < 1)
                 {
-                    Console.WriteLine("  No network interfaces found.");
+                    Console.WriteLine($"  No network interfaces found.");
                 }
 
-                Console.WriteLine("  Number of interfaces .................... : {0}", nics.Length);
+                Console.WriteLine($"  Number of interfaces .................... : {nics.Length}");
 
                 foreach (NetworkInterface adapter in nics)
                 {
@@ -53,12 +53,12 @@ namespace SystemInfoApi
                     Console.WriteLine();
                     Console.WriteLine(adapter.Description);
                     Console.WriteLine(String.Empty.PadLeft(adapter.Description.Length, '='));
-                    Console.WriteLine("  Adapter ID ................................ : {0}", adapter.Id);
-                    Console.WriteLine("  Adapter Desc............................... : {0}", adapter.Description);
-                    Console.WriteLine("  Adapter name............................... : {0}", adapter.Name);
-                    Console.WriteLine("  Interface type ............................ : {0}", adapter.NetworkInterfaceType);
-                    Console.WriteLine("  Physical Address .......................... : {0}", adapter.GetPhysicalAddress().ToString());
-                    Console.WriteLine("  Operational status ........................ : {0}", adapter.OperationalStatus);
+                    Console.WriteLine($"  Adapter ID ................................ : {adapter.Id}");
+                    Console.WriteLine($"  Adapter Desc............................... : {adapter.Description}");
+                    Console.WriteLine($"  Adapter name............................... : {adapter.Name}");
+                    Console.WriteLine($"  Interface type ............................ : {adapter.NetworkInterfaceType}");
+                    Console.WriteLine($"  Physical Address .......................... : {adapter.GetPhysicalAddress()}");
+                    Console.WriteLine($"  Operational status ........................ : {adapter.OperationalStatus}");
                     string versions = "";
 
                     // Create a display string for the supported IP versions.
@@ -77,40 +77,40 @@ namespace SystemInfoApi
                         versions += "IPv6";
                     }
 
-                    Console.WriteLine("  IP version ................................ : {0}", versions);
+                    Console.WriteLine($"  IP version ................................ : {versions}");
                     // The following information is not useful for loopback adapters.
                     if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback)
                     {
                         continue;
                     }
 
-                    Console.WriteLine("  DNS suffix ................................ : {0}", properties.DnsSuffix);
+                    Console.WriteLine($"  DNS suffix ................................ : {properties.DnsSuffix}");
 
                     string label;
                     if (adapter.Supports(NetworkInterfaceComponent.IPv4))
                     {
                         IPv4InterfaceProperties ipv4 = properties.GetIPv4Properties();
-                        Console.WriteLine("  MTU........................................ : {0}", ipv4.Mtu);
+                        Console.WriteLine($"  MTU........................................ : {ipv4.Mtu}");
                         if (ipv4.UsesWins)
                         {
                             IPAddressCollection winsServers = properties.WinsServersAddresses;
                             if (winsServers.Count > 0)
                             {
-                                label = "  WINS Servers .............................. :";
+                                label = $"  WINS Servers .............................. :";
                             }
                         }
                     }
 
-                    Console.WriteLine("  DNS enabled ............................... : {0}", properties.IsDnsEnabled);
-                    Console.WriteLine("  Speed ..................................... : {0}", adapter.Speed);
-                    Console.WriteLine("  Receive Only .............................. : {0}", adapter.IsReceiveOnly);
-                    Console.WriteLine("  Multicast ................................. : {0}", adapter.SupportsMulticast);
+                    Console.WriteLine($"  DNS enabled ............................... : {properties.IsDnsEnabled}");
+                    Console.WriteLine($"  Speed ..................................... : {adapter.Speed}");
+                    Console.WriteLine($"  Receive Only .............................. : {adapter.IsReceiveOnly}");
+                    Console.WriteLine($"  Multicast ................................. : {adapter.SupportsMulticast}");
 
                     var stats = adapter.GetIPv4Statistics();
-                    Console.WriteLine("  Packet Received ........................... : {0}", stats.UnicastPacketsReceived);
-                    Console.WriteLine("  Packet Sent ............................... : {0}", stats.UnicastPacketsSent);
-                    Console.WriteLine("  Bytes Received ............................ : {0}", stats.BytesReceived);
-                    Console.WriteLine("  Bytes Sent ................................ : {0}", stats.BytesSent);
+                    Console.WriteLine($"  Packet Received ........................... : {stats.UnicastPacketsReceived}");
+                    Console.WriteLine($"  Packet Sent ............................... : {stats.UnicastPacketsSent}");
+                    Console.WriteLine($"  Bytes Received ............................ : {stats.BytesReceived}");
+                    Console.WriteLine($"  Bytes Sent ................................ : {stats.BytesSent}");
                 }
             }
             catch (Exception ex)
