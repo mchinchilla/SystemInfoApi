@@ -5,7 +5,7 @@ namespace SystemInfoApi.Models
     [Serializable]
     public class memory_metrics
     {
-        public long id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
         public double mem_total { get; set; }
         public double mem_used { get; set; }
         public double mem_free { get; set; }

@@ -5,7 +5,7 @@ namespace SystemInfoApi.Models
     [Serializable]
     public class drive_metrics
     {
-        public long id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
         public string name { get; set; }
         public string? drive_format { get; set; }
         public string? drive_type { get; set; }

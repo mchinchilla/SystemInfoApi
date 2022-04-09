@@ -5,7 +5,7 @@ namespace SystemInfoApi.Models
     [Serializable]
     public class cpu_metrics
     {
-        public long id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
         public string cpu { get; set; }
         public double user { get; set; }
         public double nice { get; set; }
