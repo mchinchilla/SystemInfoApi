@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using SystemInfoApi.Middleware;
 using SystemInfoApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RepoDb;
 using Serilog;
 
 namespace SystemInfoApi
@@ -34,22 +35,30 @@ namespace SystemInfoApi
             {
                 case "SQLite":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
-                    RepoDb.SqliteBootstrap.Initialize();
+                    GlobalConfiguration
+                        .Setup()
+                        .UseSqlite();
                     break;
                 case "Postgres":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
                         .GetSection("postgresConnection").Value;
-                    RepoDb.PostgreSqlBootstrap.Initialize();
+                    GlobalConfiguration
+                        .Setup()
+                        .UsePostgreSql();
                     break;
                 case "MySQL":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
                         .GetSection("mysqlConnection").Value;
-                    RepoDb.MySqlBootstrap.Initialize();
+                    GlobalConfiguration
+                        .Setup()
+                        .UseMySql();
                     break;
                 case "SQLServer":
                     Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
                         .GetSection("sqlConnection").Value;
-                    RepoDb.SqlServerBootstrap.Initialize();
+                    GlobalConfiguration
+                        .Setup()
+                        .UseSqlServer();
                     break;
                 case "LiteDB":
                     Program.CurrentConnectionString =

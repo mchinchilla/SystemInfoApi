@@ -10,6 +10,11 @@
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+    <PackageReference Include="RepoDb.MySql" Version="1.13.1" />
+    <PackageReference Include="RepoDb.PostgreSql.BulkOperations" Version="1.13.1" />
+    <PackageReference Include="RepoDb.Sqlite.Microsoft" Version="1.13.1" />
+    <PackageReference Include="RepoDb.SQLite.System" Version="1.13.1" />
+    <PackageReference Include="RepoDb.SqlServer.BulkOperations" Version="1.13.1" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
