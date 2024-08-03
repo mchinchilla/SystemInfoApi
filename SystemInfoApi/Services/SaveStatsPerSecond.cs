@@ -1,18 +1,14 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SystemInfoApi.Models;
+﻿using SystemInfoApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SystemInfoApi.Helpers;
+using Microsoft.Extensions.Hosting;
 using LiteDB;
 using Npgsql;
 using RepoDb;
 using Serilog;
+using SystemInfoApi.Helpers;
 
 namespace SystemInfoApi.Services
 {
@@ -24,14 +20,14 @@ namespace SystemInfoApi.Services
         {
         }
 
-        public Task StartAsync(CancellationToken stoppingToken)
+        public Task StartAsync( CancellationToken stoppingToken )
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-            Log.Information($"Save Stats per Second Hosted Service Started at {DateTime.Now}.");
+            _timer = new Timer( DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds( 1 ) );
+            Log.Information( $"Save Stats per Second Hosted Service Started at {DateTime.Now}." );
             return Task.CompletedTask;
         }
 
-        private async void DoWork(object state)
+        private async void DoWork( object state )
         {
             try
             {
@@ -39,24 +35,24 @@ namespace SystemInfoApi.Services
                 memory_metrics metrics = new memory_metrics();
                 metrics = await MetricsHelper.GetMemoryMetricsAsync();
 
-                Program.cbMemoryMetricsCollection.Add(metrics);
+                Program.cbMemoryMetricsCollection.Add( metrics );
 
                 // Drives
                 List<drive_metrics> lstDrives = new List<drive_metrics>();
                 lstDrives = await MetricsHelper.GetDrivesMetricsAsync();
 
-                foreach (var drive in lstDrives)
+                foreach ( var drive in lstDrives )
                 {
-                    Program.cbDrivesMetricsCollection.Add(drive);
+                    Program.cbDrivesMetricsCollection.Add( drive );
                 }
 
                 // CPU 
                 List<cpu_metrics> lstCpus = new List<cpu_metrics>();
                 lstCpus = await MetricsHelper.GetCPUMetricsAsync();
 
-                foreach (var cpu in lstCpus)
+                foreach ( var cpu in lstCpus )
                 {
-                    Program.cbCPUMetricsCollection.Add(cpu);
+                    Program.cbCPUMetricsCollection.Add( cpu );
                 }
 
 
@@ -64,16 +60,16 @@ namespace SystemInfoApi.Services
                 //Log.Information($"CPU Records: {Program.cbCPUMetricsCollection.Count}, Memory records: {Program.cbMemoryMetricsCollection.Count}, Drives Records: {Program.cbDrivesMetricsCollection.Count}");
 #endif
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                Log.Error($"{ex}");
+                Log.Error( $"{ex}" );
             }
         }
 
-        public Task StopAsync(CancellationToken stoppingToken)
+        public Task StopAsync( CancellationToken stoppingToken )
         {
-            _timer?.Change(Timeout.Infinite, 0);
-            Log.Information($"Save Stats per Second Hosted Service Stopped at {DateTime.Now}");
+            _timer?.Change( Timeout.Infinite, 0 );
+            Log.Information( $"Save Stats per Second Hosted Service Stopped at {DateTime.Now}" );
             return Task.CompletedTask;
         }
 

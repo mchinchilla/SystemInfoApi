@@ -1,17 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using SystemInfoApi.Middleware;
 using SystemInfoApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,7 +14,7 @@ namespace SystemInfoApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup( IConfiguration configuration )
         {
             Program.cbCPUMetricsCollection.Clear();
             Program.cbMemoryMetricsCollection.Clear();
@@ -30,51 +22,51 @@ namespace SystemInfoApi
 
             Configuration = configuration;
 
-            Program.CurrentDatabase = configuration.GetSection("DatabaseInfo").GetSection("CurrentDatabase").Value;
-            switch (Program.CurrentDatabase)
+            Program.CurrentDatabase = configuration.GetSection( "DatabaseInfo" ).GetSection( "CurrentDatabase" ).Value;
+            switch ( Program.CurrentDatabase )
             {
                 case "SQLite":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" ).GetSection( "sqLite" ).Value;
                     GlobalConfiguration
                         .Setup()
                         .UseSqlite();
                     break;
                 case "Postgres":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
-                        .GetSection("postgresConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" )
+                        .GetSection( "postgresConnection" ).Value;
                     GlobalConfiguration
                         .Setup()
                         .UsePostgreSql();
                     break;
                 case "MySQL":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
-                        .GetSection("mysqlConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" )
+                        .GetSection( "mysqlConnection" ).Value;
                     GlobalConfiguration
                         .Setup()
                         .UseMySql();
                     break;
                 case "SQLServer":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
-                        .GetSection("sqlConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" )
+                        .GetSection( "sqlConnection" ).Value;
                     GlobalConfiguration
                         .Setup()
                         .UseSqlServer();
                     break;
                 case "LiteDB":
                     Program.CurrentConnectionString =
-                        configuration.GetSection("connectionstrings").GetSection("liteDB").Value;
+                        configuration.GetSection( "connectionstrings" ).GetSection( "liteDB" ).Value;
                     break;
                 case "MongoDB":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
-                        .GetSection("mongoConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" )
+                        .GetSection( "mongoConnection" ).Value;
                     break;
                 case "RavenDB":
-                    Program.CurrentConnectionString = configuration.GetSection("connectionstrings")
-                        .GetSection("ravenDBConnection").Value;
+                    Program.CurrentConnectionString = configuration.GetSection( "connectionstrings" )
+                        .GetSection( "ravenDBConnection" ).Value;
                     break;
                 default:
                     Program.CurrentConnectionString =
-                        configuration.GetSection("connectionstrings").GetSection("sqLite").Value;
+                        configuration.GetSection( "connectionstrings" ).GetSection( "sqLite" ).Value;
                     break;
             }
         }
@@ -82,19 +74,19 @@ namespace SystemInfoApi
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices( IServiceCollection services )
         {
-            services.AddControllers().AddJsonOptions(o =>
+            services.AddControllers().AddJsonOptions( o =>
             {
                 //o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 //o.JsonSerializerOptions.MaxDepth = 0;
                 //o.JsonSerializerOptions.IgnoreNullValues = true;
                 //o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
-            });
+            } );
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen( c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SystemInfoApi", Version = "v1" });
+                c.SwaggerDoc( "v1", new OpenApiInfo { Title = "SystemInfoApi", Version = "v1" } );
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "JWT Authentication",
@@ -109,11 +101,11 @@ namespace SystemInfoApi
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityDefinition( securityScheme.Reference.Id, securityScheme );
+                c.AddSecurityRequirement( new OpenApiSecurityRequirement
                 {
                     { securityScheme, new string[] { } }
-                });
+                } );
 
                 // add Basic Authentication
                 // var basicSecurityScheme = new OpenApiSecurityScheme
@@ -127,9 +119,9 @@ namespace SystemInfoApi
                 // {
                 //     { basicSecurityScheme, new string[] { } }
                 // });
-            });
+            } );
 
-            services.AddTokenAuthentication(Configuration);
+            services.AddTokenAuthentication( Configuration );
             services.AddHostedService<SaveStatsPerSecond>();
             services.AddHostedService<SaveStatsPerMinute>();
             // services.AddHostedService<SaveStatsPerHour>();
@@ -137,13 +129,13 @@ namespace SystemInfoApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure( IApplicationBuilder app, IWebHostEnvironment env )
         {
-            if (env.IsDevelopment())
+            if ( env.IsDevelopment() )
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SystemInfoApi v1"));
+                app.UseSwaggerUI( c => c.SwaggerEndpoint( "/swagger/v1/swagger.json", "SystemInfoApi v1" ) );
             }
 
             app.UseHttpsRedirection();
@@ -155,7 +147,7 @@ namespace SystemInfoApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints( endpoints => { endpoints.MapControllers(); } );
         }
     }
 }
